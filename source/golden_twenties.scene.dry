@@ -1,0 +1,138 @@
+title: The Golden Twenties
+subtitle: Economic Prosperity and Republican Optimism
+is-arrival-scene: false
+
+-- on-arrival
+
+It is April 1928. The Weimar Republic enters a period of remarkable economic prosperity. The hyperinflation crisis of 1923 is a distant memory. The Dawes Plan has stabilized the currency. Foreign investment flows into Germany—primarily American capital seeking returns in the recovering European economy.
+
+The streets of Berlin, Frankfurt, and Munich buzz with energy. New buildings rise. Theaters overflow with audiences. Jazz clubs proliferate. The arts flourish in a remarkable cultural renaissance.
+
+This is the Golden Twenties.
+
+[Continue]
+
+(set: $golden-twenties-active: true)
+
+---
+
+title: Golden Twenties - Main Decision
+id: golden-twenties-main
+on-arrival:
+
+The economic boom creates a powerful psychological effect. Citizens who feared the republic might be beginning to trust it.
+
+"Perhaps Weimar can work after all," people say in the cafés and beer halls.
+
+You witness this shift firsthand. The radical parties—both communist and fascist—find their rhetoric falling on deafer ears. People are too busy building, creating, investing in the future.
+
+Your party faces a choice: How will you respond to this golden moment?
+
+[Support republican consolidation]
+(set: $golden-twenties-choice: "consolidate")
+(go-to: golden-twenties-consolidate)
+
+[Focus on economic gains for your supporters]
+(set: $golden-twenties-choice: "party-benefit")
+(go-to: golden-twenties-party-focused)
+
+[Remain cautious about this fragile prosperity]
+(set: $golden-twenties-choice: "cautious")
+(go-to: golden-twenties-skeptical)
+
+---
+
+title: Consolidating the Republic
+id: golden-twenties-consolidate
+on-arrival:
+
+(set: $republic-support-increase: 2)
+
+Your party throws its full support behind strengthening republican institutions.
+
+You advocate for strengthening democratic safeguards, supporting republican youth organizations, and funding educational programs promoting democracy.
+
+The message resonates. In prosperity, citizens are more receptive to arguments about stability.
+
+"The republic has delivered prosperity. Now let us secure it for the future," becomes your party's theme.
+
+Support for republican values increases noticeably. Moderate voices gain influence. The radical parties find fewer recruits.
+
+(set: $republic-support: ($republic-support or 0) + $republic-support-increase)
+
+[End scenario]
+(go-to: golden-twenties-end)
+
+---
+
+title: Party-Focused Approach
+id: golden-twenties-party-focused
+on-arrival:
+
+(set: $republic-support-increase: 0)
+
+Your party prioritizes using the economic boom to benefit its own members and supporters.
+
+You secure lucrative government contracts, create party-controlled job programs, build party-aligned organizations.
+
+This strategy works—your party grows richer. But you neglect the broader republican project.
+
+Other parties follow suit. The golden age becomes less about strengthening democracy and more about factions competing for advantage.
+
+The republic stabilizes through economic inertia, not genuine democratic commitment. Republican values don't strengthen.
+
+(set: $republic-support: ($republic-support or 0) + $republic-support-increase)
+
+[End scenario]
+(go-to: golden-twenties-end)
+
+---
+
+title: The Cautious Response
+id: golden-twenties-skeptical
+on-arrival:
+
+(set: $republic-support-increase: 0.5)
+
+Your party warns that the golden prosperity rests on unstable foundations.
+
+You argue the economy depends too heavily on foreign capital, which could be withdrawn at any moment. The underlying industrial structure remains fragile.
+
+While your warnings contain truth, the public finds them grating during prosperity. Your party's cautious stance is seen as negative.
+
+Other parties criticize you for undermining confidence. Yet you have preserved credibility for the crisis ahead.
+
+(set: $republic-support: ($republic-support or 0) + $republic-support-increase)
+
+[End scenario]
+(go-to: golden-twenties-end)
+
+---
+
+title: The Golden Twenties - End
+id: golden-twenties-end
+on-arrival:
+
+(set: $golden-twenties-scenario-complete: true)
+
+The spring and summer of 1928 unfold under clear skies.
+
+Berlin becomes the cultural capital of Europe. The Bauhaus redesigns the built environment. Intellectuals debate grand visions of the future.
+
+The October 1928 elections approach with the republic seemingly vindicated. Prosperity has been achieved. Democracy appears to be working.
+
+Yet in the shadows—unnoticed by most—new forces gather:
+
+- In Munich, a failed painter watches Germany's youth
+- In Washington, stockbrokers make ever-riskier investments
+- In the universities, ideological movements stir
+- In Moscow, decisions are made that will trigger global consequences
+
+The golden age will last perhaps another year. Then the storm will come.
+
+But for now, the republic has gained something precious: time, and proof that democracy can deliver prosperity.
+
+Republic Support Change: +$republic-support-increase %
+
+[Return to main game]
+(go-to: main-menu)
