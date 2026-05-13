@@ -1,0 +1,257 @@
+title: Adenauer's Election
+subtitle: Presidential Victory and Coalition Crisis
+is-arrival-scene: false
+
+-- on-arrival
+
+The election results are in. Konrad Adenauer has won the presidency.
+
+The NSDAP, KPD, and DNVP command a significant majority in parliament—a dangerous combination that threatens the republic. Yet Adenauer, a devout Catholic and committed democrat, sees an opportunity.
+
+"We must retain faith in the republic," he declares. "New elections are the only path forward."
+
+New elections are called.
+
+-- continue
+
+The results are unexpected. No single party dominates. The NSDAP, KPD, and DNVP have lost their combined strength.
+
+A minority government is now possible—a coalition of Centrum, DVP, BVP, DDP, Others, and SPD. But it requires delicate balance and your participation.
+
+Chancellor Adenauer approaches you directly with an offer of participation in the government.
+
+[Continue to decision]
+
+(set: $chancellor-election-decision: null)
+(set: $coalition-parties: (list: "Centrum" "DVP" "BVP" "DDP" "Others" "SPD"))
+
+title: Adenauer's Offer
+id: adenauer-offer
+on-arrival:
+(if: $party-strength) {
+  This is where your party data would be evaluated.
+  Party strengths: (print: $party-strength)
+}
+(set: $minority-gov-offered: true)
+
+A minority government. Unstable, yes, but possible. Will you participate?
+
+The strongest party in the coalition will claim the chancellorship. If it's the Centrum, Heinrich Brüning will take the role. If it's the SPD—well, that depends on their relations with the DVP.
+
+[Accept government participation]
+(set: $adenauer-coalition-decision: true)
+(go-to: determine-chancellor)
+
+[Refuse government participation]
+(set: $adenauer-coalition-decision: false)
+(go-to: coalition-collapse)
+
+---
+
+title: Determining the Chancellor
+id: determine-chancellor
+on-arrival:
+
+(if: $adenauer-coalition-decision) {
+  You've accepted. Now the question: which party is strongest among your coalition members?
+} else {
+  You've refused. The government collapses before it forms.
+}
+
+The coalition calculates quickly. Numbers are tallied. 
+
+(if: $coalition-strongest: "Centrum") {
+  The Centrum emerges as the strongest coalition member.
+} else-if: $coalition-strongest: "SPD" {
+  The SPD emerges as the strongest coalition member.
+} else {
+  The numbers are unclear. A recount is required.
+}
+
+[Continue]
+(go-to: evaluate-chancellor-option)
+
+---
+
+title: Evaluate Chancellor Options
+id: evaluate-chancellor-option
+on-arrival:
+
+(if: $coalition-strongest: "Centrum") {
+  "Heinrich Brüning will be Chancellor," announces Adenauer. "The Centrum has earned it."
+  
+  Brüning, a cautious and meticulous man, accepts the role solemnly.
+} else-if: $coalition-strongest: "SPD" {
+  The SPD's claim is loud but potentially controversial. The DVP watches carefully.
+  
+  You know the DVP has always been suspicious of socialist ambitions. How strong is their relationship with the SPD?
+  
+  [Check DVP-SPD Relations]
+  (go-to: check-dvp-relations)
+} else {
+  The math doesn't add up cleanly. Something is wrong with the party calculations.
+  
+  [Debug and recalculate]
+  (go-to: adenauer-offer)
+}
+
+---
+
+title: Check DVP-SPD Relations
+id: check-dvp-relations
+on-arrival:
+
+(set: $dvp-spd-relations: (random: 20, 50))
+
+The DVP and SPD's relationship is... tense. Years of ideological conflict have left scars.
+
+Chancellor Adenauer's advisors compile a report: The relationship between the DVP and SPD stands at (print: $dvp-spd-relations) out of 100.
+
+(if: $dvp-spd-relations >= 40) {
+  Surprisingly, the relationship is strong enough. The DVP signals its willingness to work with an SPD Chancellor.
+  
+  "Otto Wels will lead," Adenauer announces. "The DVP accepts this arrangement."
+  
+  Wels, veteran of Weimar's struggles, takes the chancellorship with grim determination.
+  
+  (set: $final-chancellor: "Otto Wels")
+  [Continue to government formation]
+  (go-to: government-formed-wels)
+} else {
+  The relationship is insufficient. The DVP makes its position clear: they will not accept an SPD Chancellor.
+  
+  "Impossible," the DVP's representative states flatly. "We cannot work under a socialist government."
+  
+  The coalition teeters on the brink of collapse.
+  
+  (set: $chancellor-crisis: true)
+  [Continue to chancellor crisis]
+  (go-to: chancellor-crisis)
+}
+
+---
+
+title: Chancellor Crisis
+id: chancellor-crisis
+on-arrival:
+
+(if: $chancellor-crisis) {
+  Adenauer looks to you. "We have two paths forward:
+  
+  1. You can withdraw from the coalition entirely, leave government formation to the other parties.
+  
+  2. You can transfer the chancellorship to Heinrich Brüning of the Centrum, bypassing the SPD Chancellor question entirely."
+}
+
+[Withdraw from coalition]
+(set: $crisis-choice: "withdraw")
+(go-to: coalition-collapse)
+
+[Transfer to Brüning]
+(set: $crisis-choice: "transfer")
+(set: $final-chancellor: "Heinrich Brüning")
+(go-to: government-formed-bruning-compromise)
+
+---
+
+title: Coalition Collapse
+id: coalition-collapse
+on-arrival:
+
+(if: $adenauer-coalition-decision: false) {
+  You refused from the start. The coalition falls apart without your participation.
+  
+  New political maneuvering begins. Backroom deals. Compromises that satisfy no one.
+  
+  (set: $scenario-outcome: "coalition-failed-no-participation")
+} else-if: $crisis-choice: "withdraw" {
+  You withdraw from the coalition. The minority government cannot hold.
+  
+  The republic faces a political crisis. Emergency measures are considered.
+  
+  (set: $scenario-outcome: "coalition-failed-withdrew")
+} else {
+  Government formation has failed. The republic faces deep political uncertainty.
+  
+  (set: $scenario-outcome: "coalition-failed-other")
+}
+
+[End scenario]
+(go-to: scenario-end)
+
+---
+
+title: Government Formed - Brüning as Chancellor
+id: government-formed-bruning
+on-arrival:
+
+(set: $scenario-outcome: "bruning-chancellor")
+(set: $final-chancellor: "Heinrich Brüning")
+
+The minority government is formed. Heinrich Brüning stands as Chancellor, a steady hand in uncertain times.
+
+Brüning's appointment provides stability, though it remains fragile. The coalition must hold through difficult negotiations ahead.
+
+Your party is now part of the government. The real work begins.
+
+[End scenario]
+(go-to: scenario-end)
+
+---
+
+title: Government Formed - Brüning Compromise
+id: government-formed-bruning-compromise
+on-arrival:
+
+(set: $scenario-outcome: "bruning-chancellor-compromise")
+
+The crisis is resolved through compromise. The SPD accepts Heinrich Brüning as Chancellor rather than risk government collapse.
+
+It's not what the SPD wanted, but it's better than returning to the political wilderness.
+
+"This is democracy," Otto Wels says, resigned but accepting. "Sometimes we compromise for the greater good."
+
+Your party remains in the coalition. The government, while unconventional, takes shape.
+
+[End scenario]
+(go-to: scenario-end)
+
+---
+
+title: Government Formed - Wels as Chancellor
+id: government-formed-wels
+on-arrival:
+
+(set: $scenario-outcome: "wels-chancellor")
+
+Otto Wels takes the chancellorship. The SPD, the party of Weimar's founders, has returned to government leadership.
+
+The DVP's acceptance is surprising but welcome. Cooperation seems possible, at least for now.
+
+Wels begins the delicate work of forming an SPD-led minority government.
+
+Your party is now firmly part of the government coalition.
+
+[End scenario]
+(go-to: scenario-end)
+
+---
+
+title: Adenauer Election Scenario - End
+id: scenario-end
+on-arrival:
+
+(set: $adenauer-scenario-complete: true)
+
+-- Scenario Complete --
+
+Outcome: (print: $scenario-outcome)
+Final Chancellor: (print: $final-chancellor)
+Coalition Parties: (print: $coalition-parties)
+
+The Adenauer election scenario has concluded. The government is either formed or has collapsed, setting the stage for what comes next.
+
+The republic's fate now rests with this government—or with the vacuum if no government could be formed.
+
+[Return to main game]
+(go-to: main-menu)
